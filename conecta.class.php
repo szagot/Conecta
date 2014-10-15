@@ -28,8 +28,8 @@ class Conecta
     */
     private 
         $host     = 'localhost',
-        $user     = 'usuário',
-        $pass     = 'senha'; 
+        $user     = 'Usuário',
+        $pass     = 'Senha';
     
     /**
     * Opções de conexão
@@ -366,7 +366,6 @@ class Conecta
                     $this->sqlQuery .= "LIMIT " . $this->limit . " ";
                 
                 // Preparando Query
-                $this->pdoConecta->beginTransaction();
                 $query = $this->pdoConecta->prepare( $this->sqlQuery );
 
                 // Conferindo campos com bindValue
@@ -401,9 +400,6 @@ class Conecta
                 //Executando Query
                 $query->execute();
                 
-                // Confirmando a transação
-                $this->pdoConecta->commit();
-                
                 // Numero de registros afetados
                 $this->numRegs = $query->rowCount();
                 
@@ -429,10 +425,6 @@ class Conecta
             } 
             catch ( PDOException $error_query ) 
             {
-                // Se for alguma alteração, desfaz a última ação não comitada
-                if ( $this->type != 'SELECT' )
-                    $this->pdoConecta->rollback();
-                
                 $this->erro = 'Erro obtido em ' . date( 'd/m/Y H:i:s' ) . '(' . $error_query->getCode() . '): ' . $error_query->getMessage()
                             . ' | SQL -> ' . $this->sql;
                 return false;
@@ -445,18 +437,7 @@ class Conecta
             // Execução de um código SQL direto
             try
             {
-                $this->pdoConecta->beginTransaction();
-                
                 $query = $this->pdoConecta->query( $sql );
-                
-                $this->pdoConecta->commit();
-
-                // Numero de registros afetados
-                $this->numRegs = $query->rowCount();
-
-                if ( preg_match( '/^(insert|replace)/i', $sql ) )
-                    // Último registro inserido
-                    $this->ultimoReg = $this->pdoConecta->lastInsertId();
                 
                 //Retorno diferenciado por tipo de consulta
                 if ( $oneRow )
@@ -469,10 +450,6 @@ class Conecta
             } 
             catch ( PDOException $error_query ) 
             {
-                // Se for alguma alteração, desfaz a última ação não comitada
-                if ( preg_match( '/^(insert|replace|update|delete)/i', $sql ) )
-                    $this->pdoConecta->rollback();
-
                 $this->erro = 'Erro obtido em ' . date( 'd/m/Y H:i:s' ) . '(' . $error_query->getCode() . '): ' . $error_query->getMessage()
                             . ' | SQL -> ' . $sql;
                 return false;
