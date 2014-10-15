@@ -19,7 +19,7 @@ class Conecta
 	* @access private
 	* @var string
 	*/
-	private $db = 'tmwe_tmwxd'; 
+	private $db = 'Banco de Dados'; 
 
 	/**
 	* Variáveis de Banco de Dados. Não há necessidade de informar caso se trabalhe localmente. Ver método construtor.
@@ -28,8 +28,8 @@ class Conecta
 	*/
 	private 
         $host 	= 'localhost',
-	    $user 	= 'tmwe_userbd',
-	    $pass 	= '_m0d3l0TMWxD!BD'; 
+	    $user 	= 'root',
+	    $pass 	= ''; 
     
     /**
     * Opções de conexão
